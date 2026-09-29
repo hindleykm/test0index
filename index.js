@@ -3,50 +3,38 @@ import moment from "moment";
 import simpleGit from "simple-git";
 import random from "random";
 
+const git = simpleGit();
 const path = "./data.json";
+
 function getRndInteger(min, max) {
-  return Math.floor(Math.random() * (max - min + 1) ) + min;
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+async function run() {
+  const total = 125;
 
-let counter = 0;
+  for (let i = 1; i <= total; i++) {
+    const x = random.int(0, 40);
+    const y = random.int(0, 6);
+    const date = moment()
+      .subtract(getRndInteger(1, 8), "y")
+      .add(x, "w")
+      .add(y, "d")
+      .format();
 
-const makeCommits = (n) => {
-  if (n === 0) return;
-  counter++;
-  console.log(`Commit #${counter}`);
-  
-  const x = random.int(0, 54);
-  const y = random.int(0, 5);
-  const date = moment()
-  .subtract(getRndInteger(1, 8), "y") // subtract at least 1 year
-  .add(random.int(0, 40), "w")
-  .add(random.int(0, 6), "d")
-  .format();
-  const data = { date: date };
-  console.log(date);
-  
-  jsonfile.writeFile(path, data, () => {
-    simpleGit()
-      .pull("origin", "main")
-      .then(() => {
-        simpleGit()
-          .add([path])
-          .commit(date, { "--date": date })
-          .push("origin", "main", { "--force": true }, (err) => {
-            if (err) {
-              console.error("Push error:", err);
-            } else {
-              console.log("Push successful!");
-            }
-            makeCommits.bind(this, --n)();
-          })
-      })
-      .catch((err) => {
-        console.error("Pull error:", err);
-      });
-  });
-};
+    jsonfile.writeFileSync(path, { date });
+    await git.add([path]);
+    await git.commit(date, { "--date": date });
 
-makeCommits(125);
+    console.log(`Created commit ${i}/${total} for date: ${date}`);
+  }
 
+  console.log("Pushing all commits to GitHub...");
+  await git.push("origin", "main", { "--force": true });
+  console.log("Finished successfully!");
+}
+
+run().catch((err) => {
+  console.error("Execution failed:", err);
+  process.exit(1);
+});
