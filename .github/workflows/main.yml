@@ -18,6 +18,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -34,8 +36,10 @@ jobs:
 
       - name: Configure Git
         run: |
-          git config --global user.name "hindleyk"
+          git config --global user.name "hindleykm"
           git config --global user.email "AnnetteHeidegger309815@outlook.com"
+          git config --global author.name "hindleykm"
+          git config --global author.email "AnnetteHeidegger309815@outlook.com"
 
 
       - name: Run Node.js script
