@@ -41,8 +41,8 @@ jobs:
 
       - name: Configure Git
         run: |
-          git config --global user.name "fahri1616"
-          git config --global user.email "ClearenceLaposky101899@outlook.com"
+          git config --global user.name "hindleykm"
+          git config --global user.email "AnnetteHeidegger309815@outlook.com"
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
 
 
